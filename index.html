@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#050d1a">
+<title>WLAN Wiki — SIS 2414NS</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050d1a;
+    --bg2: #071428;
+    --panel: #0a1d3a;
+    --panel2: #0d2347;
+    --border: #1a3a6a;
+    --accent: #00b4ff;
+    --accent2: #0077cc;
+    --accent3: #00e5ff;
+    --text: #c8dff5;
+    --text2: #7aaad4;
+    --text3: #3d6a99;
+    --white: #e8f4ff;
+    --green: #00ffaa;
+    --yellow: #ffd166;
+    --red: #ff4d6d;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Sora', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,180,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,180,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(5,13,26,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+  }
+
+  .nav-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    margin-right: 32px;
+    flex-shrink: 0;
+  }
+  .nav-logo span { color: var(--text3); }
+
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text3);
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    background: none;
+    text-decoration: none;
+  }
+  .nav-tab:hover {
+    color: var(--accent);
+    border-color: var(--border);
+    background: rgba(0,180,255,0.05);
+  }
+  .nav-tab.active {
+    color: var(--accent3);
+    border-color: var(--accent2);
+    background: rgba(0,180,255,0.1);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 120px 24px 60px;
+    text-align: center;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    background: rgba(0,180,255,0.08);
+    border: 1px solid rgba(0,180,255,0.25);
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--text2);
+    margin-bottom: 8px;
+  }
+
+  .hero-group {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+
+  /* MAIN */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 80px;
+    scroll-margin-top: 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+  }
+
+  .section-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .section h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  /* CARDS GRID */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover {
+    border-color: var(--accent2);
+    transform: translateY(-2px);
+  }
+
+  .card-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent3);
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title::before {
+    content: '▸';
+    color: var(--accent2);
+    font-size: 10px;
+  }
+
+  .card p { color: var(--text); font-size: 14px; margin-bottom: 10px; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* EXAMPLE BOX */
+  .example {
+    background: rgba(0,180,255,0.04);
+    border: 1px solid rgba(0,180,255,0.15);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+
+  .example-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .example p { font-size: 13px; color: var(--text2); }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #020b18;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    overflow-x: auto;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  .code-block .c-comment { color: var(--text3); }
+  .code-block .c-cmd { color: var(--accent3); }
+  .code-block .c-val { color: var(--yellow); }
+  .code-block .c-key { color: var(--green); }
+  .code-block .c-sec { color: var(--accent); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin-top: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    background: var(--panel2);
+    color: var(--accent3);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(26,58,106,0.5);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(0,180,255,0.03); }
+
+  /* WIDE CARD */
+  .card-wide {
+    grid-column: 1 / -1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    margin-left: 6px;
+  }
+  .badge-green { background: rgba(0,255,170,0.1); color: var(--green); border: 1px solid rgba(0,255,170,0.2); }
+  .badge-yellow { background: rgba(255,209,102,0.1); color: var(--yellow); border: 1px solid rgba(255,209,102,0.2); }
+  .badge-red { background: rgba(255,77,109,0.1); color: var(--red); border: 1px solid rgba(255,77,109,0.2); }
+  .badge-blue { background: rgba(0,180,255,0.1); color: var(--accent); border: 1px solid rgba(0,180,255,0.2); }
+
+  /* INFO BOX */
+  .info-box {
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.15);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .info-box strong { color: var(--accent3); }
+
+  /* COMPARISON */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .compare-col {
+    background: rgba(0,180,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .compare-col h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .compare-col ul { list-style: none; }
+  .compare-col ul li {
+    font-size: 13px;
+    color: var(--text2);
+    padding: 4px 0;
+    padding-left: 12px;
+    position: relative;
+  }
+  .compare-col ul li::before { content: '→'; position: absolute; left: 0; color: var(--text3); font-size: 10px; top: 6px; }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+  }
+  footer span { color: var(--accent2); }
+
+  /* SCROLL TOP */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    background: var(--accent2);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .scroll-top.visible { opacity: 1; }
+  .scroll-top:hover { background: var(--accent); }
+
+  /* =====================
+     MOBILE FIRST — полная адаптация
+     ===================== */
+
+  /* Планшет */
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+    .nav-tab { font-size: 10px; padding: 5px 10px; }
+  }
+
+  /* Телефон */
+  @media (max-width: 640px) {
+    /* Nav — горизонтальный скролл меню */
+    nav { padding: 0 12px; }
+    .nav-inner {
+      height: auto;
+      padding: 8px 0 6px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .nav-logo {
+      font-size: 11px;
+      width: 100%;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-tabs {
+      width: 100%;
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 4px;
+      padding-bottom: 2px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-tab {
+      font-size: 10px;
+      padding: 5px 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Hero */
+    .hero { padding: 90px 16px 40px; }
+    .hero h1 { font-size: 28px; line-height: 1.15; }
+    .hero-sub { font-size: 14px; }
+    .hero-badge { font-size: 10px; padding: 4px 12px; }
+
+    /* Main layout */
+    main { padding: 0 12px 60px; }
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 20px; }
+    .section-icon { font-size: 22px; }
+
+    /* Cards — одна колонка */
+    .cards { grid-template-columns: 1fr; gap: 12px; }
+    .card { padding: 16px; }
+    .card-wide { padding: 16px; }
+    .card-title { font-size: 12px; }
+    .card p { font-size: 13px; }
+
+    /* Compare grid — одна колонка */
+    .compare-grid { grid-template-columns: 1fr; gap: 8px; }
+
+    /* Tables — горизонтальный скролл */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { font-size: 12px; min-width: 480px; }
+    th { font-size: 10px; padding: 8px 10px; }
+    td { padding: 8px 10px; font-size: 12px; }
+
+    /* Code blocks */
+    .code-block { font-size: 11px; padding: 12px 14px; overflow-x: auto; }
+
+    /* Example boxes */
+    .example { padding: 12px 14px; }
+    .example p { font-size: 12px; }
+    .example-label { font-size: 9px; }
+
+    /* Info boxes */
+    .info-box { font-size: 12px; padding: 12px 14px; }
+
+    /* Badges */
+    .badge { font-size: 9px; padding: 1px 6px; }
+
+    /* Section header */
+    .section-header { gap: 10px; margin-bottom: 20px; }
+    .section-num { display: none; }
+
+    /* Scroll top button — bigger for touch */
+    .scroll-top {
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+      border-radius: 50%;
+      bottom: 16px;
+      right: 16px;
+    }
+
+    /* Footer */
+    footer { font-size: 11px; padding: 28px 16px; }
+  }
+
+  /* Очень маленький экран */
+  @media (max-width: 380px) {
+    .hero h1 { font-size: 24px; }
+    .nav-logo { font-size: 10px; }
+    .card-title { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">WLAN<span>//</span>WIKI &nbsp;·&nbsp; SIS 2414NS</div>
+    <div class="nav-tabs">
+      <a class="nav-tab active" href="#basics" onclick="setActive(this)">📡 Основы</a>
+      <a class="nav-tab" href="#standards" onclick="setActive(this)">📋 Стандарты</a>
+      <a class="nav-tab" href="#security" onclick="setActive(this)">🔒 Безопасность</a>
+      <a class="nav-tab" href="#encryption" onclick="setActive(this)">🔐 Шифрование</a>
+      <a class="nav-tab" href="#components" onclick="setActive(this)">🔧 Компоненты</a>
+      <a class="nav-tab" href="#config" onclick="setActive(this)">⚙️ Конфиг Cisco</a>
+      <a class="nav-tab" href="#roaming" onclick="setActive(this)">🔄 Роуминг</a>
+      <a class="nav-tab" href="#troubleshoot" onclick="setActive(this)">🛠 Диагностика</a>
+      <a class="nav-tab" href="#exam" onclick="setActive(this)">🎯 Экзамен</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Cisco CCNA · WLAN Reference</div>
+  <h1>Всё про <em>WLAN</em><br>за одну страницу</h1>
+  <p class="hero-sub">Подготовка к паре по Cisco — просто, понятно, с примерами</p>
+  <div class="hero-group">▸ Группа SIS 2414NS ◂</div>
+</div>
+
+<main>
+
+  <!-- ===== BASICS ===== -->
+  <section class="section" id="basics">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-icon">📡</span>
+      <h2>Основы WLAN</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">Что такое WLAN?</div>
+        <p>WLAN (Wireless Local Area Network) — это локальная сеть без проводов. Устройства общаются через радиоволны вместо кабелей.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример для дибила</div>
+          <p>Ты дома подключился к Wi-Fi — вот это и есть WLAN. Нет провода = беспроводная сеть.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">WLAN vs LAN</div>
+        <div class="compare-grid" style="margin-top:0">
+          <div class="compare-col">
+            <h4>LAN (проводная)</h4>
+            <ul>
+              <li>Ethernet кабель</li>
+              <li>Стабильная скорость</li>
+              <li>Нет помех</li>
+              <li>Не мобильно</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h4>WLAN (Wi-Fi)</h4>
+            <ul>
+              <li>Радиоволны</li>
+              <li>Скорость варьируется</li>
+              <li>Помехи есть</li>
+              <li>Мобильность 100%</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Частоты: 2.4 ГГц vs 5 ГГц</div>
+        <p><strong style="color:var(--yellow)">2.4 ГГц</strong> — дальше бьёт, хуже скорость, много помех (соседи, микроволновки).</p>
+        <p><strong style="color:var(--accent3)">5 ГГц</strong> — быстрее, меньше помех, но не пробивает стены так далеко.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>2.4 ГГц — как крупная волна: далеко идёт, но медленная. 5 ГГц — быстрый но короткий.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Топологии WLAN</div>
+        <p><strong style="color:var(--accent)">Infrastructure mode (BSS)</strong> — все девайсы подключаются через точку доступа (AP). Самый частый вариант.</p>
+        <p><strong style="color:var(--green)">Ad-hoc (IBSS)</strong> — девайсы напрямую друг с другом, без AP.</p>
+        <p><strong style="color:var(--yellow)">ESS</strong> — несколько AP с одним SSID = большая зона покрытия.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>BSS = кафе с роутером. IBSS = ты шеришь файл другу через Wi-Fi Direct. ESS = университетский Wi-Fi на всех этажах.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">SSID, BSSID, ESSID</div>
+        <p><strong style="color:var(--accent3)">SSID</strong> (Service Set ID) — имя Wi-Fi сети. Например: "KAZ_TELECOM_5G".</p>
+        <p><strong style="color:var(--yellow)">BSSID</strong> — MAC-адрес точки доступа. Уникальный ID конкретного AP.</p>
+        <p><strong style="color:var(--green)">ESSID</strong> — общее имя для нескольких AP в одной большой сети.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>SSID — это "МакДак_WiFi". BSSID — это конкретный роутер на 2-м этаже. ESSID — все роутеры МакДака в здании.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Каналы Wi-Fi</div>
+        <p>В диапазоне <strong style="color:var(--yellow)">2.4 ГГц</strong> — 14 каналов, но не перекрываются только 1, 6 и 11.</p>
+        <p>В диапазоне <strong style="color:var(--accent3)">5 ГГц</strong> — намного больше неперекрывающихся каналов (до 25+).</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Если сосед и ты на канале 6 — вы мешаете друг другу. Поставь себе канал 1 или 11.</p>
+        </div>
+      </div>
+
+      <div class="card-wide">
+        <div class="card-title">Как работает подключение к Wi-Fi (Association Process)</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>#</th><th>Шаг</th><th>Кто делает</th><th>Что происходит</th></tr>
+            <tr><td>1</td><td>Probe Request</td><td>Клиент</td><td>Клиент кричит: "Есть кто?" — ищет сети вокруг</td></tr>
+            <tr><td>2</td><td>Probe Response</td><td>AP</td><td>AP отвечает: "Я тут! Вот мои параметры"</td></tr>
+            <tr><td>3</td><td>Authentication</td><td>Клиент → AP</td><td>Клиент говорит: "Хочу подключиться"</td></tr>
+            <tr><td>4</td><td>Auth Response</td><td>AP</td><td>AP: "Ок, подходи"</td></tr>
+            <tr><td>5</td><td>Association Request</td><td>Клиент</td><td>Клиент официально просит присоединиться к BSS</td></tr>
+            <tr><td>6</td><td>Association Response</td><td>AP</td><td>AP назначает AID и говорит "Добро пожаловать!"</td></tr>
+          </table>
+        </div>
+        <div class="example" style="margin-top:16px">
+          <div class="example-label">💡 Пример из жизни</div>
+          <p>Как войти в клуб: ты кричишь есть ли место (Probe), охранник отвечает (Response), ты показываешь паспорт (Auth), охранник проверяет (Auth Response), ты платишь за вход (Association Request), тебе дают браслет (Association Response + AID).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STANDARDS ===== -->
+  <section class="section" id="standards">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-icon">📋</span>
+      <h2>Стандарты IEEE 802.11</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card-wide">
+        <div class="card-title">Все стандарты Wi-Fi</div>
+        <div class="table-wrap">
+          <table>
+            <tr>
+              <th>Стандарт</th>
+              <th>Название</th>
+              <th>Год</th>
+              <th>Частота</th>
+              <th>Макс. скорость</th>
+              <th>Фишка</th>
+            </tr>
+            <tr>
+              <td><span class="badge badge-blue">802.11</span></td>
+              <td>—</td>
+              <td>1997</td>
+              <td>2.4 ГГц</td>
+              <td>2 Мбит/с</td>
+              <td>Прадед всех Wi-Fi</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">802.11b</span></td>
+              <td>Wi-Fi 1</td>
+              <td>1999</td>
+              <td>2.4 ГГц</td>
+              <td>11 Мбит/с</td>
+              <td>DSSS модуляция</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">802.11a</span></td>
+              <td>Wi-Fi 2</td>
+              <td>1999</td>
+              <td>5 ГГц</td>
+              <td>54 Мбит/с</td>
+              <td>OFDM, меньше помех</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">802.11g</span></td>
+              <td>Wi-Fi 3</td>
+              <td>2003</td>
+              <td>2.4 ГГц</td>
+              <td>54 Мбит/с</td>
+              <td>OFDM на 2.4 ГГц</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">802.11n</span></td>
+              <td>Wi-Fi 4</td>
+              <td>2009</td>
+              <td>2.4 / 5 ГГц</td>
+              <td>600 Мбит/с</td>
+              <td>MIMO появился!</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">802.11ac</span></td>
+              <td>Wi-Fi 5</td>
+              <td>2013</td>
+              <td>5 ГГц</td>
+              <td>3.5 Гбит/с</td>
+              <td>MU-MIMO, беамформинг</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-red">802.11ax</span></td>
+              <td>Wi-Fi 6/6E</td>
+              <td>2019</td>
+              <td>2.4/5/6 ГГц</td>
+              <td>9.6 Гбит/с</td>
+              <td>OFDMA, для толпы</td>
+            </tr>
+          </table>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Запомни для экзамена</div>
+          <p>CCNA чаще всего спрашивает 802.11a/b/g/n/ac. Главное: <strong style="color:var(--yellow)">n = Wi-Fi 4</strong>, <strong style="color:var(--green)">ac = Wi-Fi 5</strong>. MIMO появился в 802.11n. 802.11a — единственный старый стандарт на 5 ГГц.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Что такое MIMO?</div>
+        <p>MIMO (Multiple Input Multiple Output) — технология, где AP и клиент используют несколько антенн одновременно.</p>
+        <p><strong style="color:var(--accent)">SU-MIMO</strong> — одна антенна работает с одним клиентом.</p>
+        <p><strong style="color:var(--green)">MU-MIMO</strong> (802.11ac Wave 2+) — AP работает с несколькими клиентами одновременно.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>SU-MIMO = один кассир обслуживает одного человека. MU-MIMO = 4 кассира обслуживают 4 человек одновременно. Очередь сокращается!</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Методы модуляции</div>
+        <p><strong style="color:var(--yellow)">DSSS</strong> (Direct Sequence Spread Spectrum) — 802.11b. Медленно, стабильно.</p>
+        <p><strong style="color:var(--accent3)">OFDM</strong> (Orthogonal Frequency Division Multiplexing) — 802.11a/g/n/ac. Быстро, делит сигнал на подчастоты.</p>
+        <p><strong style="color:var(--green)">OFDMA</strong> — 802.11ax. Как OFDM, но для нескольких клиентов сразу.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>OFDM — как трасса с несколькими полосами движения. Каждая полоса = своя подчастота. Данные едут параллельно!</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Channel Bonding</div>
+        <p>Объединение двух каналов в один для удвоения скорости. Введено в 802.11n.</p>
+        <p>Ширина канала: 20 МГц → 40 МГц → 80 МГц → 160 МГц</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Как слить 2 полосы автотрассы в одну широкую — машины едут в 2 раза быстрее! Но нужно больше "места" в эфире.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECURITY ===== -->
+  <section class="section" id="security">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-icon">🔒</span>
+      <h2>Безопасность WLAN</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card-wide">
+        <div class="card-title">Протоколы безопасности — эволюция</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Протокол</th><th>Год</th><th>Шифрование</th><th>Статус</th><th>Проблема</th></tr>
+            <tr>
+              <td>WEP</td><td>1997</td><td>RC4 (64/128-bit)</td>
+              <td><span class="badge badge-red">ВЗЛОМАН</span></td>
+              <td>Статичные ключи, взламывается за минуты</td>
+            </tr>
+            <tr>
+              <td>WPA</td><td>2003</td><td>TKIP + RC4</td>
+              <td><span class="badge badge-yellow">УСТАРЕЛ</span></td>
+              <td>Временное решение, уязвим</td>
+            </tr>
+            <tr>
+              <td>WPA2</td><td>2004</td><td>AES + CCMP</td>
+              <td><span class="badge badge-green">СТАНДАРТ</span></td>
+              <td>Уязвим к KRACK-атаке</td>
+            </tr>
+            <tr>
+              <td>WPA3</td><td>2018</td><td>AES-256 + SAE</td>
+              <td><span class="badge badge-blue">ЛУЧШИЙ</span></td>
+              <td>Пока не везде поддерживается</td>
+            </tr>
+          </table>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Запомни</div>
+          <p>WEP = замок без ключа. WPA = замок с ключом из картона. WPA2 = нормальный замок. WPA3 = бронированная дверь.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">WPA2 Personal vs Enterprise</div>
+        <p><strong style="color:var(--yellow)">WPA2-Personal (PSK)</strong> — один пароль для всех. Все знают один Pre-Shared Key.</p>
+        <p><strong style="color:var(--accent3)">WPA2-Enterprise (802.1X)</strong> — каждый пользователь со своим логином/паролем через RADIUS сервер.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Personal = один ключ от офиса у всех. Enterprise = у каждого сотрудника своя карточка-пропуск. Уволили — заблокировали только его.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">RADIUS и 802.1X</div>
+        <p>RADIUS — сервер аутентификации. Проверяет логин/пароль и говорит AP: пустить или нет.</p>
+        <p>Компоненты 802.1X:</p>
+        <p>• <strong style="color:var(--green)">Supplicant</strong> — клиент (ноутбук)</p>
+        <p>• <strong style="color:var(--accent)">Authenticator</strong> — AP (точка доступа)</p>
+        <p>• <strong style="color:var(--yellow)">Auth Server</strong> — RADIUS сервер</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Ты (Supplicant) → стучишь в дверь клуба (AP/Authenticator) → охранник звонит хозяину (RADIUS) → хозяин говорит "пусти" или "нет".</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">EAP — типы аутентификации</div>
+        <p><strong style="color:var(--accent3)">EAP-TLS</strong> — самый безопасный. Сертификаты и у клиента, и у сервера.</p>
+        <p><strong style="color:var(--green)">PEAP</strong> — сертификат только у сервера. Клиент — логин/пароль в зашифрованном туннеле.</p>
+        <p><strong style="color:var(--yellow)">EAP-FAST</strong> — Cisco-вариант. Вместо сертификата — PAC (Protected Access Credential).</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>EAP-TLS = оба показывают паспорт. PEAP = только охранник с паспортом, ты говоришь пароль. LEAP = устаревший Cisco-вариант.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Атаки на WLAN</div>
+        <p><strong style="color:var(--red)">Rogue AP</strong> — злоумышленник ставит "свой" AP с таким же именем сети.</p>
+        <p><strong style="color:var(--red)">Evil Twin</strong> — фальшивая сеть-двойник. Все данные идут через хакера.</p>
+        <p><strong style="color:var(--red)">Deauthentication Attack</strong> — отправляет пакеты "отключись!" всем клиентам.</p>
+        <p><strong style="color:var(--red)">KRACK</strong> — атака на WPA2, эксплойт процесса установления ключей.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример Evil Twin</div>
+          <p>Ты в аэропорту видишь "AirportFreeWiFi" и подключаешься. А это ноутбук хакера, который читает весь твой трафик.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Защита от угроз</div>
+        <p><strong style="color:var(--green)">WIPS</strong> (Wireless Intrusion Prevention System) — система обнаружения и блокировки атак в эфире.</p>
+        <p><strong style="color:var(--accent)">Management Frame Protection (802.11w)</strong> — шифрование служебных фреймов. Защищает от Deauth атак.</p>
+        <p><strong style="color:var(--yellow)">RF Management</strong> — мониторинг эфира на наличие чужих AP.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>WIPS = камера безопасности в эфире. Видит рогового AP и сигналит администратору.</p>
+        </div>
+      </div>
+
+      <!-- ===== ENCRYPTION DEEP DIVE ===== -->
+      <div id="encryption" style="scroll-margin-top:80px; width:100%;"></div>
+
+      <!-- Заголовок блока шифрования -->
+      <div class="card-wide" style="border-color: rgba(0,229,255,0.35); background: linear-gradient(135deg, #071e3d, #050d1a); margin-bottom:0;">
+        <div class="card-title" style="font-size:16px; color:var(--white); margin-bottom:16px;">🔐 Шифрование WLAN — полный разбор: почему одно надёжнее другого</div>
+        <p style="color:var(--text2); margin-bottom:20px;">Шифрование — это способ превратить твои данные в нечитаемую кашу для всех, кроме того, у кого есть правильный ключ. В WLAN история шифрования — это история ошибок, патчей и наконец-то правильных решений. Разберём каждый по шагам.</p>
+        <div class="table-wrap">
+          <table>
+            <tr>
+              <th>Алгоритм</th><th>Где живёт</th><th>Тип шифра</th><th>Длина ключа</th><th>Статус</th><th>Главная проблема / достоинство</th>
+            </tr>
+            <tr><td><strong style="color:var(--red)">RC4</strong></td><td>WEP, WPA-TKIP</td><td>Поточный</td><td>40–104 бит</td><td><span class="badge badge-red">ВЗЛОМАН</span></td><td>IV повторяется → ключ виден за минуты</td></tr>
+            <tr><td><strong style="color:var(--yellow)">TKIP</strong></td><td>WPA</td><td>RC4 + патчи</td><td>128 бит</td><td><span class="badge badge-yellow">ЗАПРЕЩЁН</span></td><td>RC4 в основе — патчи не спасли</td></tr>
+            <tr><td><strong style="color:var(--green)">AES</strong></td><td>WPA2, WPA3</td><td>Блочный</td><td>128 / 256 бит</td><td><span class="badge badge-green">НАДЁЖНЫЙ</span></td><td>10–14 раундов перемешивания, не взломан</td></tr>
+            <tr><td><strong style="color:var(--accent3)">CCMP</strong></td><td>WPA2</td><td>AES-CTR + CBC-MAC</td><td>128 бит</td><td><span class="badge badge-green">СТАНДАРТ</span></td><td>Конфиденциальность + целостность + replay</td></tr>
+            <tr><td><strong style="color:var(--accent)">GCMP</strong></td><td>WPA3</td><td>AES-GCM</td><td>128 / 256 бит</td><td><span class="badge badge-blue">ЛУЧШИЙ</span></td><td>Быстрее CCMP, параллельная обработка</td></tr>
+            <tr><td><strong style="color:var(--accent)">SAE</strong></td><td>WPA3-Personal</td><td>Dragonfly/DH</td><td>256+ бит</td><td><span class="badge badge-blue">ЛУЧШИЙ</span></td><td>Forward Secrecy, нет оффлайн-взлома</td></tr>
+            <tr><td><strong style="color:var(--accent3)">DTLS</strong></td><td>CAPWAP (WLC↔AP)</td><td>TLS поверх UDP</td><td>128 / 256 бит</td><td><span class="badge badge-green">АВТО</span></td><td>Cisco шифрует control-туннель автоматически</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- XOR — база всего -->
+      <div class="card-wide" style="border-color: rgba(255,77,109,0.25);">
+        <div class="card-title">⚡ Основа всего: операция XOR — как шифруются биты</div>
+        <p>Прежде чем понять RC4, TKIP и AES — нужно понять <strong style="color:var(--accent3)">XOR (исключающее ИЛИ)</strong>. Это математическая операция над битами, на которой держится вся криптография.</p>
+        <div class="compare-grid" style="margin:16px 0;">
+          <div class="compare-col">
+            <h4>Правило XOR</h4>
+            <ul>
+              <li>0 XOR 0 = 0</li>
+              <li>1 XOR 1 = 0</li>
+              <li>0 XOR 1 = 1</li>
+              <li>1 XOR 0 = 1</li>
+              <li>A XOR K = C (зашифровано)</li>
+              <li>C XOR K = A (расшифровано)</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h4>Почему это работает</h4>
+            <ul>
+              <li>Если знаешь ключ K — легко</li>
+              <li>Если не знаешь K — не можешь</li>
+              <li>Симметрично: зашифровать = расшифровать</li>
+              <li>Быстро — 1 операция над битом</li>
+              <li>Основа RC4 и поточных шифров</li>
+            </ul>
+          </div>
+        </div>
+        <div class="code-block">
+<span class="c-comment">// Пример: шифруем слово "HI" с ключом</span>
+<span class="c-key">Данные:   H = 01001000   I = 01001001</span>
+<span class="c-val">Ключ:     K = 10110011   K = 10110011</span>
+<span class="c-cmd">XOR:      C = 11111011   C = 11111010  ← зашифровано (каша)</span>
+
+<span class="c-comment">// Расшифровка: та же операция с тем же ключом</span>
+<span class="c-cmd">C XOR K = 01001000 = H ✓  ← получили обратно!</span>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>XOR = лист кальки с узором (ключ). Накладываешь на рисунок (данные) — видишь хаос. Снимаешь кальку обратно — видишь оригинал. Без кальки — ничего непонятно.</p>
+        </div>
+      </div>
+
+      <!-- RC4 подробно -->
+      <div class="card-wide" style="border-color: rgba(255,77,109,0.3);">
+        <div class="card-title" style="color:var(--red);">❌ RC4 — Поточный шифр и почему он провалился в WEP</div>
+        <p style="margin-bottom:12px;">RC4 — <strong style="color:var(--accent3)">поточный шифр</strong>. Это значит: он не ждёт пока наберётся блок данных — он генерирует бесконечный поток псевдослучайных байт и XOR-ит каждый байт данных с каждым байтом потока.</p>
+        <div class="compare-grid" style="margin-bottom:16px;">
+          <div class="compare-col">
+            <h4>Как работает RC4</h4>
+            <ul>
+              <li>Берёт ключ (40 или 104 бита)</li>
+              <li>Генерирует keystream (поток байт)</li>
+              <li>XOR keystream с данными</li>
+              <li>Выход = зашифрованные данные</li>
+              <li>Расшифровка: та же операция</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h4>Проблема WEP</h4>
+            <ul>
+              <li>Ключ = IV (24 бит) + Master Key</li>
+              <li>IV передаётся ОТКРЫТО в пакете!</li>
+              <li>24 бита = только 16 млн комбинаций</li>
+              <li>В загруженной сети IV повторяется через ~5000 пакетов</li>
+              <li>Одинаковый IV → одинаковый keystream → XOR раскрывает данные</li>
+            </ul>
+          </div>
+        </div>
+        <div class="code-block">
+<span class="c-comment">// Атака на WEP: два пакета с одинаковым IV</span>
+<span class="c-key">C1 = P1 XOR KeyStream(IV)</span>
+<span class="c-key">C2 = P2 XOR KeyStream(IV)</span>
+<span class="c-comment">// Хакер делает: C1 XOR C2</span>
+<span class="c-cmd">C1 XOR C2 = P1 XOR P2</span>
+<span class="c-comment">// KeyStream сократился! Теперь видно соотношение P1 и P2</span>
+<span class="c-comment">// Зная один из пакетов (напр. HTTP заголовок) → восстанавливаешь второй</span>
+<span class="c-val">// Инструмент aircrack-ng взламывает WEP за 60 секунд</span>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Пример из жизни</div>
+          <p>Представь: ты кодируешь сообщения с другом, используя страницу книги (keystream). Если дважды используешь одну страницу — враг берёт два зашифрованных письма, вычитает одно из другого и получает "разницу" — а значит может восстановить оба. WEP делал именно это — повторял страницы слишком часто.</p>
+        </div>
+        <div class="info-box"><strong>Итог по RC4:</strong> Сам алгоритм RC4 не так плох — проблема в том, КАК его использовали в WEP. Маленький IV + передаётся открыто + никакой проверки целостности = катастрофа.</div>
+      </div>
+
+      <!-- TKIP подробно -->
+      <div class="card-wide" style="border-color: rgba(255,209,102,0.25);">
+        <div class="card-title" style="color:var(--yellow);">⚠️ TKIP — "Давайте починим WEP, не меняя железо"</div>
+        <p style="margin-bottom:12px;">2003 год. WEP взломан. Менять все роутеры в мире дорого. Решение: <strong style="color:var(--yellow)">TKIP</strong> — патч поверх RC4, который работает на старом железе.</p>
+        <p style="margin-bottom:16px;">TKIP добавил 4 улучшения поверх RC4:</p>
+        <div class="table-wrap" style="margin-bottom:16px;">
+          <table>
+            <tr><th>Улучшение</th><th>Что делает</th><th>Проблему какую решает</th></tr>
+            <tr>
+              <td><strong style="color:var(--accent3)">TKIP Sequence Counter (TSC)</strong></td>
+              <td>48-битный счётчик вместо 24-битного IV</td>
+              <td>Теперь не 16 млн, а 281 трлн комбинаций IV — повтор невозможен</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--green)">Per-Packet Key Mixing</strong></td>
+              <td>Каждый пакет имеет уникальный временный ключ</td>
+              <td>Даже если IV "угадан" — ключ другой для каждого пакета</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--yellow)">MIC (Michael)</strong></td>
+              <td>8-байтный код целостности сообщения</td>
+              <td>Если хакер изменил пакет — MIC не совпадёт, пакет отброшен</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--accent)">Rekeying</strong></td>
+              <td>Главный ключ меняется каждые 10 000 пакетов</td>
+              <td>Даже долгая атака бесполезна — ключ уже поменялся</td>
+            </tr>
+          </table>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Аналогия</div>
+          <p>WEP = дверь с кодом 123. TKIP = та же дверь, но код теперь меняется каждые 5 минут, плюс добавили камеру (MIC), плюс усложнили замок. Лучше? Да. Но дверь всё равно деревянная и гнилая (RC4). Профессиональный взломщик всё равно войдёт — просто дольше.</p>
+        </div>
+        <div class="code-block">
+<span class="c-comment">// TKIP per-packet key mixing — упрощённо:</span>
+<span class="c-key">TK  = Temporal Key (128 бит, меняется)</span>
+<span class="c-key">TA  = Transmitter Address (MAC AP)</span>
+<span class="c-key">TSC = Per-packet counter (48 бит)</span>
+<span class="c-cmd">Per-Packet-Key = Mix(TK, TA, TSC)</span>
+<span class="c-comment">// RC4(Per-Packet-Key) XOR Data = зашифровано</span>
+<span class="c-comment">// Уязвимость: MIC (Michael) слаб математически</span>
+<span class="c-val">// Beck-Tews атака (2008): подделка пакетов за 15 минут</span>
+        </div>
+        <div class="info-box"><strong>Почему TKIP запрещён с 2012:</strong> MIC-алгоритм "Michael" оказался слабым. Атаки Beck-Tews и Ohigashi-Morii позволяли подделывать пакеты. Плюс RC4 в основе никуда не делся. IEEE запретил TKIP в стандарте 802.11-2012.</div>
+      </div>
+
+      <!-- AES подробно -->
+      <div class="card-wide" style="border-color: rgba(0,255,170,0.25);">
+        <div class="card-title" style="color:var(--green);">✅ AES — Почему это совсем другой уровень</div>
+        <p style="margin-bottom:12px;">AES (Advanced Encryption Standard) — <strong style="color:var(--green)">блочный шифр</strong>. В отличие от RC4 (поточного), AES берёт данные <strong>блоками по 128 бит</strong> и прогоняет через серию математических преобразований.</p>
+        <p style="margin-bottom:16px;">AES-128 делает <strong style="color:var(--accent3)">10 раундов</strong> преобразований. Каждый раунд = 4 операции:</p>
+        <div class="table-wrap" style="margin-bottom:16px;">
+          <table>
+            <tr><th>Операция</th><th>Что делает</th><th>Зачем нужна</th></tr>
+            <tr>
+              <td><strong style="color:var(--accent3)">SubBytes</strong></td>
+              <td>Каждый байт заменяется другим по таблице (S-Box)</td>
+              <td>Нелинейность — математически не восстановить без ключа</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--green)">ShiftRows</strong></td>
+              <td>Строки матрицы 4×4 сдвигаются по кругу</td>
+              <td>Перемешивает байты между столбцами — диффузия</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--yellow)">MixColumns</strong></td>
+              <td>Каждый столбец умножается на полином</td>
+              <td>Максимальное перемешивание — один бит влияет на всё</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--accent)">AddRoundKey</strong></td>
+              <td>XOR с раундовым ключом (производным от мастер-ключа)</td>
+              <td>Вносит секрет ключа в данные</td>
+            </tr>
+          </table>
+        </div>
+        <div class="code-block">
+<span class="c-comment">// AES-128: 10 раундов для 128-битного ключа</span>
+<span class="c-comment">// AES-192: 12 раундов для 192-битного ключа</span>
+<span class="c-comment">// AES-256: 14 раундов для 256-битного ключа</span>
+
+<span class="c-key">Данные (128 бит) → Initial Round Key Addition</span>
+<span class="c-cmd">→ [SubBytes → ShiftRows → MixColumns → AddRoundKey] × 9</span>
+<span class="c-cmd">→ [SubBytes → ShiftRows → AddRoundKey] × 1 (финальный)</span>
+<span class="c-val">→ Зашифрованный блок (128 бит)</span>
+
+<span class="c-comment">// Перебор AES-128: 2^128 = 340 ундециллионов вариантов</span>
+<span class="c-comment">// Суперкомпьютер: ~миллиард лет. Практически невозможно.</span>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Пример — почему AES не взломать перебором</div>
+          <p>AES-128 имеет 2¹²⁸ возможных ключей. Если взять все суперкомпьютеры мира и запустить их на перебор — они не успеют за время жизни Вселенной. RC4 с 40-битным ключом WEP — 2⁴⁰ = ~триллион. Современный ноутбук проверяет их за часы.</p>
+        </div>
+        <div class="compare-grid" style="margin-top:16px;">
+          <div class="compare-col">
+            <h4>Почему блочный лучше поточного</h4>
+            <ul>
+              <li>Нет зависимости от IV — нет проблемы повтора</li>
+              <li>Каждый блок шифруется независимо (в CTR режиме)</li>
+              <li>Математически доказанная стойкость</li>
+              <li>10+ раундов = лавинный эффект</li>
+              <li>Стандарт NIST с 2001 года</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h4>Лавинный эффект AES</h4>
+            <ul>
+              <li>Изменил 1 бит входа</li>
+              <li>После 1 раунда: ~50% битов изменились</li>
+              <li>После 10 раундов: выход полностью другой</li>
+              <li>Невозможно угадать что изменилось</li>
+              <li>У RC4 такого нет — изменение предсказуемо</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- CCMP подробно -->
+      <div class="card-wide" style="border-color: rgba(0,229,255,0.25);">
+        <div class="card-title" style="color:var(--accent3);">🛡️ CCMP — как AES работает в WPA2 (три задачи сразу)</div>
+        <p style="margin-bottom:12px;">AES — это только алгоритм шифрования. Для Wi-Fi нужно больше: не просто зашифровать, но и убедиться что данные не изменены, и защититься от повторных атак. Для этого придумали <strong style="color:var(--accent3)">CCMP</strong>.</p>
+        <p style="margin-bottom:16px;">CCMP = Counter Mode (CTR) + Cipher Block Chaining MAC (CBC-MAC). Решает три задачи:</p>
+        <div class="table-wrap" style="margin-bottom:16px;">
+          <table>
+            <tr><th>Задача</th><th>Механизм</th><th>Как работает</th><th>Аналогия</th></tr>
+            <tr>
+              <td><strong style="color:var(--green)">Конфиденциальность</strong></td>
+              <td>AES в режиме CTR</td>
+              <td>Счётчик шифруется AES, результат XOR-ится с данными. Каждый пакет — уникальный счётчик.</td>
+              <td>Сейф с уникальным кодом на каждую посылку</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--yellow)">Целостность</strong></td>
+              <td>CBC-MAC → MIC (8 байт)</td>
+              <td>Из заголовка + данных вычисляется код. Получатель пересчитывает — если не совпало, пакет выброшен.</td>
+              <td>Пломба на двери: сорвана — значит вскрывали</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--accent)">Защита от повтора</strong></td>
+              <td>Packet Number (48 бит)</td>
+              <td>Каждый пакет нумеруется. Если номер уже видели — пакет отброшен как "старый".</td>
+              <td>Нумерованные чеки: повторный чек не принимают</td>
+            </tr>
+          </table>
+        </div>
+        <div class="code-block">
+<span class="c-comment">// Структура CCMP пакета (добавляется 16 байт overhead):</span>
+<span class="c-key">[802.11 Header] [CCMP Header 8 байт] [Зашифрованные данные] [MIC 8 байт]</span>
+
+<span class="c-comment">// CCMP Header содержит:</span>
+<span class="c-val">- PN0..PN5 (Packet Number, 48 бит — счётчик пакетов)</span>
+<span class="c-val">- Key ID (какой ключ использовать)</span>
+<span class="c-val">- ExtIV бит (=1, сигнализирует что это CCMP, не WEP)</span>
+
+<span class="c-comment">// Процесс шифрования:</span>
+<span class="c-cmd">1. CBC-MAC(Header + Data) → MIC (8 байт)</span>
+<span class="c-cmd">2. CTR-encrypt(Data + MIC) → зашифровано</span>
+<span class="c-cmd">3. Отправить: Header + CCMP Header + Encrypted(Data+MIC)</span>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Зачем три защиты, а не одна?</div>
+          <p>Шифрование (CTR) скрывает содержимое — но не мешает хакеру переслать тот же зашифрованный пакет снова (replay). MIC (CBC-MAC) ловит изменения — но без нумерации хакер может повторить старый валидный пакет. Packet Number блокирует повторы. Все три нужны вместе — как замок + сигнализация + камера.</p>
+        </div>
+        <div class="info-box"><strong>Для CCNA запомни:</strong> WPA2 обязательно использует CCMP. TKIP в WPA2 тоже формально разрешён, но deprecated. На экзамене WPA2 = AES + CCMP.</div>
+      </div>
+
+      <!-- GCMP / WPA3 -->
+      <div class="card-wide" style="border-color: rgba(0,180,255,0.3);">
+        <div class="card-title" style="color:var(--accent);">🚀 GCMP и WPA3 — почему это быстрее и надёжнее</div>
+        <p style="margin-bottom:12px;"><strong style="color:var(--accent)">GCMP</strong> (Galois/Counter Mode Protocol) — эволюция CCMP в WPA3. Вместо двух отдельных операций (CTR + CBC-MAC) GCMP делает всё за один проход через AES в режиме GCM.</p>
+        <div class="compare-grid" style="margin-bottom:16px;">
+          <div class="compare-col">
+            <h4>CCMP (WPA2)</h4>
+            <ul>
+              <li>2 прохода AES: CTR + CBC-MAC</li>
+              <li>MIC = 8 байт</li>
+              <li>Нельзя параллелить CBC-MAC</li>
+              <li>AES-128 только</li>
+              <li>Медленнее на слабом железе</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h4>GCMP (WPA3)</h4>
+            <ul>
+              <li>1 проход: GCM = CTR + GHASH</li>
+              <li>MIC = 16 байт (в 2 раза надёжнее)</li>
+              <li>GHASH параллелится — быстрее</li>
+              <li>AES-128 или AES-256</li>
+              <li>Эффективнее на Wi-Fi 6 железе</li>
+            </ul>
+          </div>
+        </div>
+        <div class="code-block">
+<span class="c-comment">// GCM = CTR mode + GHASH (Galois Field умножение)</span>
+<span class="c-comment">// GHASH работает в поле GF(2^128) — математика Галуа</span>
+<span class="c-key">Encrypt: AES-CTR(Data) → Ciphertext</span>
+<span class="c-key">Auth:    GHASH(Header, Ciphertext) → Auth Tag (16 байт)</span>
+<span class="c-comment">// Ключевое: GHASH не зависит от CTR → оба считаются параллельно</span>
+<span class="c-val">// WPA3-Enterprise 192-bit: GCMP-256 + SHA-384 + ECDH-384</span>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Пример — почему параллельность важна</div>
+          <p>CCMP = повар, который сначала готовит блюдо, потом упаковывает. GCMP = два повара работают одновременно: один готовит, другой упаковывает. Результат тот же — но быстрее. На телефоне это экономит батарею и снижает задержку.</p>
+        </div>
+      </div>
+
+      <!-- SAE подробно -->
+      <div class="card-wide" style="border-color: rgba(0,180,255,0.3);">
+        <div class="card-title" style="color:var(--accent);">🔑 SAE (WPA3-Personal) — конец эпохи взлома паролей через handshake</div>
+        <p style="margin-bottom:12px;">Главная уязвимость WPA2-PSK: хакер захватывает 4-Way Handshake (EAPOL пакеты) и уходит домой — там в оффлайне перебирает пароли по словарю до победы. <strong style="color:var(--green)">SAE это полностью исключает.</strong></p>
+        <div class="table-wrap" style="margin-bottom:16px;">
+          <table>
+            <tr><th></th><th>WPA2-PSK</th><th>WPA3-SAE</th></tr>
+            <tr><td>Обмен ключами</td><td>PSK напрямую в handshake</td><td>Dragonfly: математический обмен без передачи секрета</td></tr>
+            <tr><td>Оффлайн-атака</td><td><span class="badge badge-red">ВОЗМОЖНА</span> Захватил handshake → перебирай дома</td><td><span class="badge badge-green">НЕВОЗМОЖНА</span> Нечего захватывать — нет статичного обмена</td></tr>
+            <tr><td>Forward Secrecy</td><td><span class="badge badge-red">НЕТ</span> Узнал пароль → расшифровал прошлый трафик</td><td><span class="badge badge-green">ЕСТЬ</span> Каждая сессия = уникальный ключ. Пароль бесполезен для прошлого.</td></tr>
+            <tr><td>Онлайн-перебор</td><td>Нет защиты</td><td>После каждой ошибки — задержка (anti-clogging)</td></tr>
+          </table>
+        </div>
+        <div class="code-block">
+<span class="c-comment">// SAE Dragonfly Handshake (упрощённо):</span>
+<span class="c-comment">// Основан на Diffie-Hellman в эллиптических кривых (ECDH)</span>
+
+<span class="c-key">1. Оба (AP и клиент) из пароля выводят точку P на эллиптической кривой</span>
+<span class="c-key">2. Каждый генерирует случайное число r (ephemeral — одноразовое)</span>
+<span class="c-key">3. Обмениваются: AP шлёт r_AP × P, клиент шлёт r_client × P</span>
+<span class="c-cmd">4. Оба вычисляют: PMK = r_AP × r_client × P (одинаково!)</span>
+<span class="c-comment">// Магия: PMK получается одинаковый, но r никто не передавал!</span>
+<span class="c-val">// Даже зная пароль и весь трафик — r уже исчезло → PMK не восстановить</span>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Пример — Diffie-Hellman на пальцах</div>
+          <p>Ты и друг хотите получить одинаковый цвет краски, не раскрывая секрет. Вы оба берёте общий жёлтый цвет. Ты добавляешь свой секретный синий → получаешь зелёный, отдаёшь другу. Друг добавляет свой секретный красный → получает оранжевый, отдаёт тебе. Ты добавляешь свой синий к оранжевому. Друг добавляет свой красный к зелёному. Оба получают одинаковый цвет! Подглядывающий видел только зелёный и оранжевый — ничего не понял.</p>
+        </div>
+      </div>
+
+      <!-- 4-Way Handshake + KRACK -->
+      <div class="card-wide" style="border-color: rgba(0,229,255,0.2);">
+        <div class="card-title">🤝 4-Way Handshake WPA2 — и почему KRACK его сломал</div>
+        <p style="margin-bottom:16px;">После аутентификации WPA2 должен установить ключи шифрования. Для этого AP и клиент делают 4-Way Handshake — обмен EAPOL пакетами для выработки <strong style="color:var(--accent3)">PTK (Pairwise Transient Key)</strong>.</p>
+        <div class="table-wrap" style="margin-bottom:16px;">
+          <table>
+            <tr><th>Шаг</th><th>Кто → Кому</th><th>Что</th><th>Что вычисляется</th></tr>
+            <tr><td>1</td><td>AP → Клиент</td><td>ANonce (случайное число AP)</td><td>Клиент вычисляет PTK из: PMK + ANonce + SNonce + MAC-AP + MAC-Client</td></tr>
+            <tr><td>2</td><td>Клиент → AP</td><td>SNonce + MIC</td><td>AP тоже вычисляет PTK, проверяет MIC — совпало = пароль верный</td></tr>
+            <tr><td>3</td><td>AP → Клиент</td><td>GTK (групповой ключ) + MIC</td><td>GTK = для broadcast/multicast трафика</td></tr>
+            <tr><td>4</td><td>Клиент → AP</td><td>ACK + MIC</td><td>Установка завершена, оба начинают использовать PTK</td></tr>
+          </table>
+        </div>
+        <div class="code-block">
+<span class="c-comment">// Иерархия ключей WPA2:</span>
+<span class="c-key">PSK (пароль) → PMK (256 бит, мастер-ключ)</span>
+<span class="c-cmd">PMK + Nonces + MACs → PTK (через PBKDF2)</span>
+<span class="c-comment">// PTK делится на части:</span>
+<span class="c-val">PTK[0:16]  = KCK  (Key Confirmation Key — для MIC в handshake)</span>
+<span class="c-val">PTK[16:32] = KEK  (Key Encryption Key — шифрует GTK)</span>
+<span class="c-val">PTK[32:48] = TK   (Temporal Key — реальное шифрование данных)</span>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 KRACK атака — как она работает</div>
+          <p>На шаге 3 AP ждёт ACK от клиента. Если ACK не пришёл — AP повторяет шаг 3 снова. KRACK заставляет повторить шаг 3 много раз подряд, блокируя ACK. Каждый повтор — клиент "переустанавливает" уже использованный ключ и <strong style="color:var(--red)">сбрасывает счётчик пакетов (nonce) обратно в 0</strong>. Теперь два пакета с одинаковым nonce → как IV-атака WEP → данные можно расшифровать. WPA3/SAE не использует этот handshake вообще.</p>
+        </div>
+      </div>
+
+      <!-- итоговая таблица применения -->
+      <div class="card-wide">
+        <div class="card-title">📍 Где какое шифрование применяется — итог</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Сценарий</th><th>Протокол</th><th>Шифрование данных</th><th>Обмен ключами</th><th>Вывод</th></tr>
+            <tr>
+              <td>Домашний роутер (старый)</td>
+              <td>WPA2-Personal</td>
+              <td>AES-CCMP 128 бит</td>
+              <td>4-Way Handshake + PSK</td>
+              <td><span class="badge badge-green">ОК</span> Если сложный пароль</td>
+            </tr>
+            <tr>
+              <td>Домашний роутер (новый 2020+)</td>
+              <td>WPA3-Personal</td>
+              <td>AES-GCMP 128/256 бит</td>
+              <td>SAE (Dragonfly)</td>
+              <td><span class="badge badge-blue">ЛУЧШИЙ</span> Включай если есть</td>
+            </tr>
+            <tr>
+              <td>Офис / корпоратив</td>
+              <td>WPA2-Enterprise</td>
+              <td>AES-CCMP 128 бит</td>
+              <td>802.1X + RADIUS + EAP</td>
+              <td><span class="badge badge-green">СТАНДАРТ</span> Свой логин у каждого</td>
+            </tr>
+            <tr>
+              <td>Банки, ВУЗы, госструктуры</td>
+              <td>WPA3-Enterprise</td>
+              <td>AES-GCMP 256 бит</td>
+              <td>EAP-TLS + сертификаты</td>
+              <td><span class="badge badge-blue">МАКСИМУМ</span> Сертификат у каждого</td>
+            </tr>
+            <tr>
+              <td>Кафе / гостиница (гостевая)</td>
+              <td>Open / WPA2-Personal</td>
+              <td>AES или никакого</td>
+              <td>Нет или общий пароль</td>
+              <td><span class="badge badge-yellow">ОСТОРОЖНО</span> Нужен VPN</td>
+            </tr>
+            <tr>
+              <td>Старый роутер (до 2003)</td>
+              <td>WEP</td>
+              <td>RC4 40/104 бит</td>
+              <td>Статичный ключ</td>
+              <td><span class="badge badge-red">ОПАСНО</span> Замени роутер</td>
+            </tr>
+            <tr>
+              <td>WLC ↔ AP туннель (CAPWAP)</td>
+              <td>DTLS</td>
+              <td>AES-128/256</td>
+              <td>TLS сертификаты</td>
+              <td><span class="badge badge-green">АВТО</span> Cisco делает сам</td>
+            </tr>
+          </table>
+        </div>
+        <div class="example" style="margin-top:16px">
+          <div class="example-label">💡 Финальный вывод по шифрованию</div>
+          <p><strong style="color:var(--red)">RC4</strong> = сломан математически (IV повтор). <strong style="color:var(--yellow)">TKIP</strong> = RC4 с патчами, но слабый MIC — запрещён. <strong style="color:var(--green)">AES</strong> = блочный шифр, 10+ раундов, 2¹²⁸ вариантов ключей — не взломан. <strong style="color:var(--accent3)">CCMP</strong> = AES в WPA2 с тремя защитами. <strong style="color:var(--accent)">GCMP</strong> = быстрее CCMP, 256-бит в WPA3. <strong style="color:var(--accent)">SAE</strong> = убивает оффлайн-взлом паролей навсегда.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMPONENTS ===== -->
+  <section class="section" id="components">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-icon">🔧</span>
+      <h2>Компоненты WLAN</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">Access Point (AP)</div>
+        <p>Точка доступа — устройство, которое создаёт беспроводную сеть. Соединяет Wi-Fi клиентов с проводной сетью.</p>
+        <p>Бывают:</p>
+        <p>• <strong style="color:var(--yellow)">Autonomous AP</strong> — настраивается отдельно, сам по себе</p>
+        <p>• <strong style="color:var(--accent3)">Lightweight AP (LWAP)</strong> — управляется через WLC контроллер</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Autonomous AP = сам себе директор. LWAP = подчинённый, которым управляет начальник (WLC).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">WLC — Wireless LAN Controller</div>
+        <p>Контроллер беспроводной сети. Централизованно управляет всеми LWAP точками доступа.</p>
+        <p>Функции WLC:</p>
+        <p>• Конфигурация всех AP с одного места</p>
+        <p>• Управление роумингом клиентов</p>
+        <p>• Политики безопасности</p>
+        <p>• RF Management (мощность, каналы)</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>WLC = главный диспетчер аэропорта. Все самолёты (AP) получают указания от него. Без диспетчера — хаос.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">CAPWAP — протокол WLC↔AP</div>
+        <p>Control And Provisioning of Wireless Access Points — протокол связи между WLC и LWAP.</p>
+        <p>Два канала:</p>
+        <p>• <strong style="color:var(--accent)">Control channel</strong> (UDP 5246) — управление AP</p>
+        <p>• <strong style="color:var(--green)">Data channel</strong> (UDP 5247) — передача данных клиентов</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>CAPWAP = рация между командиром (WLC) и солдатом (AP). Один канал для приказов, другой для репортажей с места.</p>
+        </div>
+        <div class="code-block">
+<span class="c-comment"># AP отправляет Discovery Request</span>
+<span class="c-comment"># WLC отвечает Discovery Response</span>
+<span class="c-comment"># Создаётся DTLS туннель (шифрованный)</span>
+<span class="c-comment"># AP получает конфиг и начинает работать</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Split MAC Architecture</div>
+        <p>В CAPWAP архитектуре функции MAC делятся между AP и WLC:</p>
+        <p><strong style="color:var(--yellow)">AP выполняет:</strong> Beacons, Probe Response, шифрование/дешифрование</p>
+        <p><strong style="color:var(--accent3)">WLC выполняет:</strong> Аутентификацию, политики, QoS, роуминг</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>AP = продавец в магазине (принимает запросы). WLC = бухгалтер и менеджер (решает кому что дать и по какой цене).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">FlexConnect (HREAP)</div>
+        <p>Режим работы AP, при котором он может работать автономно даже при потере связи с WLC.</p>
+        <p>Используется в филиалах, где нет постоянного канала до главного офиса с WLC.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Интернет-магазин потерял связь с складом. FlexConnect = продавец знает, что делать, и без инструкций сверху.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Antenna Types</div>
+        <p><strong style="color:var(--accent3)">Omnidirectional</strong> — сигнал во все стороны равномерно (как фонарь). Для офисов, помещений.</p>
+        <p><strong style="color:var(--yellow)">Directional (Yagi, Patch)</strong> — сигнал направлен в одну сторону. Для соединения двух зданий.</p>
+        <p><strong style="color:var(--green)">Dipole</strong> — стандартная "резиновая уточка" антенна. Omnidirectional.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Omni = лампочка освещает комнату. Directional = фонарик — бьёт далеко, но только в одну сторону.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONFIG ===== -->
+  <section class="section" id="config">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-icon">⚙️</span>
+      <h2>Конфигурация Cisco</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card-wide">
+        <div class="card-title">Настройка Autonomous AP — Базовый Wi-Fi</div>
+        <div class="code-block">
+<span class="c-comment">! Входим в конфигурацию интерфейса dot11</span>
+<span class="c-cmd">Router(config)#</span> <span class="c-key">interface dot11Radio 0</span>
+<span class="c-cmd">Router(config-if)#</span> <span class="c-val">no shutdown</span>
+<span class="c-cmd">Router(config-if)#</span> <span class="c-key">ssid</span> <span class="c-val">SIS2414NS_WiFi</span>
+
+<span class="c-comment">! Настройка SSID</span>
+<span class="c-cmd">Router(config)#</span> <span class="c-key">dot11 ssid</span> <span class="c-val">SIS2414NS_WiFi</span>
+<span class="c-cmd">Router(config-ssid)#</span> <span class="c-val">authentication open</span>
+<span class="c-cmd">Router(config-ssid)#</span> <span class="c-key">wpa-psk ascii</span> <span class="c-val">MyPassword123</span>
+<span class="c-cmd">Router(config-ssid)#</span> <span class="c-val">guest-mode</span>
+        </div>
+      </div>
+
+      <div class="card-wide">
+        <div class="card-title">WPA2 Personal (PSK) на Cisco AP</div>
+        <div class="code-block">
+<span class="c-cmd">Router(config)#</span> <span class="c-key">dot11 ssid</span> <span class="c-val">CorpNetwork</span>
+<span class="c-cmd">Router(config-ssid)#</span> <span class="c-key">authentication open</span>
+<span class="c-cmd">Router(config-ssid)#</span> <span class="c-key">authentication key-management wpa version 2</span>
+<span class="c-cmd">Router(config-ssid)#</span> <span class="c-key">wpa-psk ascii</span> <span class="c-val">SuperSecretPass!</span>
+
+<span class="c-comment">! Применяем к радио-интерфейсу</span>
+<span class="c-cmd">Router(config)#</span> <span class="c-key">interface dot11Radio 0</span>
+<span class="c-cmd">Router(config-if)#</span> <span class="c-key">ssid</span> <span class="c-val">CorpNetwork</span>
+<span class="c-cmd">Router(config-if)#</span> <span class="c-key">encryption mode ciphers aes-ccm</span>
+        </div>
+        <div class="example">
+          <div class="example-label">💡 Что тут происходит</div>
+          <p>Создаём SSID → включаем WPA2 → ставим пароль → применяем к антенне → включаем AES шифрование.</p>
+        </div>
+      </div>
+
+      <div class="card-wide">
+        <div class="card-title">WPA2 Enterprise (802.1X + RADIUS)</div>
+        <div class="code-block">
+<span class="c-comment">! Указываем RADIUS сервер</span>
+<span class="c-cmd">Router(config)#</span> <span class="c-key">radius-server host</span> <span class="c-val">192.168.1.100</span> <span class="c-key">key</span> <span class="c-val">RadiusSecret</span>
+
+<span class="c-comment">! Настройка AAA</span>
+<span class="c-cmd">Router(config)#</span> <span class="c-key">aaa new-model</span>
+<span class="c-cmd">Router(config)#</span> <span class="c-key">aaa authentication dot1x default group radius</span>
+<span class="c-cmd">Router(config)#</span> <span class="c-key">dot1x system-auth-control</span>
+
+<span class="c-comment">! SSID с Enterprise аутентификацией</span>
+<span class="c-cmd">Router(config)#</span> <span class="c-key">dot11 ssid</span> <span class="c-val">CorpEnterprise</span>
+<span class="c-cmd">Router(config-ssid)#</span> <span class="c-key">authentication open eap eap_methods</span>
+<span class="c-cmd">Router(config-ssid)#</span> <span class="c-key">authentication key-management wpa version 2</span>
+        </div>
+      </div>
+
+      <div class="card-wide">
+        <div class="card-title">Команды диагностики AP</div>
+        <div class="code-block">
+<span class="c-comment">! Посмотреть статус радио-интерфейса</span>
+<span class="c-cmd">Router#</span> <span class="c-key">show interfaces dot11Radio 0</span>
+
+<span class="c-comment">! Просмотр подключённых клиентов</span>
+<span class="c-cmd">Router#</span> <span class="c-key">show dot11 associations</span>
+
+<span class="c-comment">! Статистика по SSID</span>
+<span class="c-cmd">Router#</span> <span class="c-key">show dot11 bssid</span>
+
+<span class="c-comment">! Просмотр настроенных SSID</span>
+<span class="c-cmd">Router#</span> <span class="c-key">show run | section dot11</span>
+        </div>
+      </div>
+
+      <div class="card-wide">
+        <div class="card-title">WLC — Основные команды</div>
+        <div class="code-block">
+<span class="c-comment">! Просмотр всех AP подключённых к WLC</span>
+<span class="c-cmd">WLC></span> <span class="c-key">show ap summary</span>
+
+<span class="c-comment">! Подробная инфа о конкретном AP</span>
+<span class="c-cmd">WLC></span> <span class="c-key">show ap config general</span> <span class="c-val">AP_Name</span>
+
+<span class="c-comment">! Просмотр клиентов</span>
+<span class="c-cmd">WLC></span> <span class="c-key">show client summary</span>
+
+<span class="c-comment">! Статус CAPWAP туннеля</span>
+<span class="c-cmd">WLC></span> <span class="c-key">show capwap ip tunnel</span>
+
+<span class="c-comment">! Просмотр WLAN (SSID) на WLC</span>
+<span class="c-cmd">WLC></span> <span class="c-key">show wlan summary</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ROAMING ===== -->
+  <section class="section" id="roaming">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-icon">🔄</span>
+      <h2>Роуминг и RF Management</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">Что такое роуминг?</div>
+        <p>Роуминг — плавное переключение клиента с одного AP на другой без разрыва соединения.</p>
+        <p>Происходит когда: сигнал текущего AP слабеет, а соседний AP сильнее.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Ты идёшь по коридору университета с телефоном. Сеть не рвётся — ты плавно переходишь с AP на одном этаже к AP на другом. Это роуминг!</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Типы роуминга</div>
+        <p><strong style="color:var(--accent3)">Layer 2 Roaming</strong> — AP в одной подсети. IP адрес клиента не меняется. Быстро.</p>
+        <p><strong style="color:var(--yellow)">Layer 3 Roaming</strong> — AP в разных подсетях. Нужен туннель (Mobility Anchor) чтобы сохранить IP.</p>
+        <p><strong style="color:var(--green)">Fast Roaming (802.11r)</strong> — минимальная задержка. Ключи заранее кешируются на соседних AP.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример L3</div>
+          <p>Переехал из Алматы в Астану. Твой "домашний адрес" (IP) остаётся алматинским — письма (пакеты) пересылают туннелем.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">RRM — Radio Resource Management</div>
+        <p>Автоматическое управление радиоресурсами — Cisco WLC сам выбирает каналы и мощность для каждого AP.</p>
+        <p>Функции:</p>
+        <p>• <strong style="color:var(--accent)">TPC</strong> — авто-регулировка мощности передатчика</p>
+        <p>• <strong style="color:var(--green)">DCA</strong> — авто-выбор канала</p>
+        <p>• <strong style="color:var(--yellow)">CCX</strong> — Cisco Client eXtensions</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>RRM = умный светофор. Сам решает когда и кому давать зелёный, чтобы не было пробок (помех).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">QoS в WLAN (WMM)</div>
+        <p>WMM (Wi-Fi Multimedia) — стандарт приоритизации трафика в Wi-Fi. Часть 802.11e.</p>
+        <p>4 категории (от высокого к низкому приоритету):</p>
+        <p>🎤 <strong style="color:var(--red)">Voice (AC_VO)</strong> — звонки VoIP</p>
+        <p>🎥 <strong style="color:var(--yellow)">Video (AC_VI)</strong> — видеоконференции</p>
+        <p>📄 <strong style="color:var(--accent3)">Best Effort (AC_BE)</strong> — обычный интернет</p>
+        <p>📦 <strong style="color:var(--text3)">Background (AC_BK)</strong> — фоновые задачи</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Zoom-звонок в одной вкладке и торрент в другой? WMM даёт Zoom приоритет — звонок чистый, торрент ждёт своей очереди.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Power Save Mode</div>
+        <p>Клиенты могут переходить в "сон" для экономии батареи. AP буферизирует пакеты.</p>
+        <p><strong style="color:var(--accent)">DTIM</strong> (Delivery Traffic Indication Map) — в Beacon-фрейме AP сообщает: "Есть пакеты для спящих клиентов, просыпайтесь!"</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Телефон "спит". AP держит твои входящие сообщения. По расписанию (DTIM) будит тебя: "Вставай, тебе пришло!"</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Mobility Groups</div>
+        <p>Группа WLC контроллеров, которые обмениваются информацией о клиентах для поддержки роуминга между ними.</p>
+        <p>Клиент может бесшовно роумингировать между AP разных WLC, если они в одной Mobility Group.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>Корпус А и корпус Б университета — разные WLC. Но в одной Mobility Group → ты переходишь между корпусами без переподключения.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TROUBLESHOOT ===== -->
+  <section class="section" id="troubleshoot">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-icon">🛠</span>
+      <h2>Диагностика WLAN проблем</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card-wide">
+        <div class="card-title">Распространённые проблемы и решения</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Симптом</th><th>Причина</th><th>Решение</th></tr>
+            <tr>
+              <td>Клиент не видит SSID</td>
+              <td>AP выключен, SSID скрыт, далеко</td>
+              <td>Проверить AP, включить broadcast SSID, уменьшить расстояние</td>
+            </tr>
+            <tr>
+              <td>Клиент видит SSID, но не подключается</td>
+              <td>Неверный пароль, несовместимость безопасности</td>
+              <td>Проверить PSK, убедиться в совпадении протоколов WPA</td>
+            </tr>
+            <tr>
+              <td>Подключился, но интернета нет</td>
+              <td>DHCP не работает, шлюз недостижим</td>
+              <td>Проверить DHCP сервер, маршрут по умолчанию</td>
+            </tr>
+            <tr>
+              <td>Медленный Wi-Fi</td>
+              <td>Интерференция, много клиентов, слабый сигнал</td>
+              <td>Сменить канал, добавить AP, проверить помехи</td>
+            </tr>
+            <tr>
+              <td>AP не регистрируется на WLC</td>
+              <td>CAPWAP порты заблокированы, нет DHCP</td>
+              <td>Открыть UDP 5246/5247, настроить DHCP option 43</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">DHCP Option 43</div>
+        <p>Специальная опция DHCP, которая говорит AP: "Вот IP адрес твоего WLC контроллера".</p>
+        <p>AP после загрузки получает IP через DHCP и в option 43 находит адрес WLC → устанавливает CAPWAP туннель.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>AP как новый сотрудник: получил пропуск (IP) и в инструкции написано где офис начальника (WLC IP через Option 43).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">SNR и RSSI</div>
+        <p><strong style="color:var(--accent3)">RSSI</strong> (Received Signal Strength Indicator) — мощность принимаемого сигнала. Чем меньше (в минус), тем хуже. Норма: -65 дБм и выше.</p>
+        <p><strong style="color:var(--green)">SNR</strong> (Signal-to-Noise Ratio) — соотношение сигнал/шум. Чем выше, тем лучше. Хорошо: >25 дБ.</p>
+        <div class="example">
+          <div class="example-label">💡 Пример</div>
+          <p>RSSI = громкость музыки. SNR = громкость музыки VS шум в комнате. Даже тихая музыка хороша, если вокруг тишина.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Команды отладки</div>
+        <div class="code-block">
+<span class="c-comment">! Дебаг CAPWAP на AP</span>
+<span class="c-cmd">AP#</span> <span class="c-key">debug capwap client events</span>
+<span class="c-cmd">AP#</span> <span class="c-key">debug capwap client errors</span>
+
+<span class="c-comment">! Дебаг dot1x аутентификации</span>
+<span class="c-cmd">Router#</span> <span class="c-key">debug dot1x events</span>
+<span class="c-cmd">Router#</span> <span class="c-key">debug dot1x errors</span>
+
+<span class="c-comment">! Просмотр клиентов на WLC</span>
+<span class="c-cmd">WLC></span> <span class="c-key">show client detail</span> <span class="c-val">aa:bb:cc:dd:ee:ff</span>
+
+<span class="c-comment">! Отключить дебаг</span>
+<span class="c-cmd">Router#</span> <span class="c-key">no debug all</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EXAM ===== -->
+  <section class="section" id="exam">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-icon">🎯</span>
+      <h2>Шпаргалка для экзамена CCNA</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card-wide">
+        <div class="card-title">Топ-20 вещей которые надо знать</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>#</th><th>Тема</th><th>Что запомнить</th></tr>
+            <tr><td>1</td><td>802.11a</td><td>5 ГГц, 54 Мбит/с, OFDM, 1999 год</td></tr>
+            <tr><td>2</td><td>802.11b</td><td>2.4 ГГц, 11 Мбит/с, DSSS, 1999 год</td></tr>
+            <tr><td>3</td><td>802.11g</td><td>2.4 ГГц, 54 Мбит/с, OFDM</td></tr>
+            <tr><td>4</td><td>802.11n</td><td>Wi-Fi 4, оба диапазона, MIMO, 600 Мбит/с</td></tr>
+            <tr><td>5</td><td>802.11ac</td><td>Wi-Fi 5, 5 ГГц, MU-MIMO, 3.5 Гбит/с</td></tr>
+            <tr><td>6</td><td>WEP</td><td>RC4, взломан, не использовать!</td></tr>
+            <tr><td>7</td><td>WPA2</td><td>AES + CCMP, Personal (PSK) или Enterprise (RADIUS)</td></tr>
+            <tr><td>8</td><td>802.1X</td><td>Enterprise auth: Supplicant → Authenticator → Auth Server</td></tr>
+            <tr><td>9</td><td>CAPWAP</td><td>UDP 5246 (control), UDP 5247 (data)</td></tr>
+            <tr><td>10</td><td>BSS</td><td>Один AP + клиенты = Basic Service Set</td></tr>
+            <tr><td>11</td><td>ESS</td><td>Несколько AP, один SSID, роуминг</td></tr>
+            <tr><td>12</td><td>SSID</td><td>Имя Wi-Fi сети (до 32 символов)</td></tr>
+            <tr><td>13</td><td>BSSID</td><td>MAC адрес AP</td></tr>
+            <tr><td>14</td><td>WLC</td><td>Управляет LWAP, CAPWAP туннель, централизованно</td></tr>
+            <tr><td>15</td><td>DTIM</td><td>Beacon с уведомлением для спящих клиентов</td></tr>
+            <tr><td>16</td><td>Каналы 2.4 ГГц</td><td>Неперекрывающиеся: 1, 6, 11</td></tr>
+            <tr><td>17</td><td>WMM</td><td>QoS для Wi-Fi: Voice > Video > Best Effort > Background</td></tr>
+            <tr><td>18</td><td>RSSI норма</td><td>-65 дБм и выше (ближе к 0 = лучше)</td></tr>
+            <tr><td>19</td><td>DHCP Option 43</td><td>Говорит AP где найти WLC</td></tr>
+            <tr><td>20</td><td>FlexConnect</td><td>AP работает без WLC при обрыве WAN</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Запомни разницу: Autonomous vs LWAP</div>
+        <div class="compare-grid" style="margin-top:0">
+          <div class="compare-col">
+            <h4>Autonomous AP</h4>
+            <ul>
+              <li>Сам себе контроллер</li>
+              <li>Каждый настраивается отдельно</li>
+              <li>Нет центр. управления</li>
+              <li>Маленькие сети</li>
+              <li>IOS на борту</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h4>Lightweight AP</h4>
+            <ul>
+              <li>Управляется WLC</li>
+              <li>Конфиг с одного места</li>
+              <li>CAPWAP туннель</li>
+              <li>Корпоративные сети</li>
+              <li>Минимум логики</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Быстрые ответы на вопросы</div>
+        <div class="info-box"><strong>Q: Какой стандарт первым ввёл MIMO?</strong><br>A: 802.11n (Wi-Fi 4)</div>
+        <div class="info-box"><strong>Q: Что использует WPA2 для шифрования?</strong><br>A: AES с CCMP</div>
+        <div class="info-box"><strong>Q: По каким портам работает CAPWAP?</strong><br>A: UDP 5246 (control)        <div class="info-box"><strong>Q: Что такое SAE?</strong><br>A: Simultaneous Authentication of Equals — замена PSK в WPA3, защита от оффлайн-взлома</div>
+        <div class="info-box"><strong>Q: Чем GCMP лучше CCMP?</strong><br>A: Быстрее (параллельный GCM), MIC 16 байт вместо 8, поддерживает AES-256</div>
+        <div class="info-box"><strong>Q: Что такое Forward Secrecy?</strong><br>A: Даже зная пароль — прошлый трафик не расшифровать. Есть в WPA3/SAE.</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span>WLAN // WIKI</span> &nbsp;·&nbsp; SIS 2414NS &nbsp;·&nbsp; Cisco CCNA &nbsp;·&nbsp; <span>2025</span>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+function setActive(el) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTop');
+  if (window.scrollY > 400) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+});
+// Подсвечивать активную вкладку при скролле
+const sections = document.querySelectorAll('section[id], div[id]');
+const tabs = document.querySelectorAll('.nav-tab');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  tabs.forEach(t => {
+    t.classList.remove('active');
+    if (t.getAttribute('href') === '#' + current) t.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
